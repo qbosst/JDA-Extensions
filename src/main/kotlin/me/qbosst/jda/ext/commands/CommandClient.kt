@@ -140,7 +140,7 @@ class CommandClient(private val prefixProvider: PrefixProvider,
                     }
                 }
                 else ->
-                    throw UnsupportedOperationException()
+                    throw IllegalArgumentException("This command does not have any functions!")
             }
         }
             .getOrElse { error -> return dispatch { onInternalError(error) } }

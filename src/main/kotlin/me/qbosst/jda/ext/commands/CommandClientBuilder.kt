@@ -10,8 +10,8 @@ import java.net.URL
 class CommandClientBuilder
 {
     private var ignoreBots: Boolean = true
-    private var listeners: MutableCollection<CommandEventListener> = mutableListOf()
-    private var developerIds: MutableCollection<Long> = mutableListOf()
+    private val listeners: MutableCollection<CommandEventListener> = mutableListOf()
+    private val developerIds: MutableCollection<Long> = mutableListOf()
 
     private var prefixProvider: PrefixProvider = object: PrefixProvider
     {
@@ -24,6 +24,8 @@ class CommandClientBuilder
         developerIds.clear()
         developerIds.addAll(ids.toTypedArray())
     }
+
+    fun addDeveloperIds(vararg ids: Long) = apply { developerIds.addAll(ids.toTypedArray()) }
 
     fun addEventListeners(vararg listeners: CommandEventListener) = apply { this.listeners.addAll(listeners) }
 
