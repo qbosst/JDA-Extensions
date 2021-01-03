@@ -11,6 +11,8 @@ class CommandContext(val client: CommandClient,
                      val command: Command)
 {
     val jda get() = event.jda
+    val message get() = event.message
+    val author get() = event.author
     val guild get() = if(event.isFromGuild) event.guild else null
     val member get() = event.member
     val textChannel get() = if(event.isFromType(ChannelType.TEXT)) event.textChannel else null

@@ -36,9 +36,9 @@ abstract class Command
             val arguments = func.valueParameters
                 .filterNot { param -> param.type.classifier?.equals(CommandContext::class) == true }
                 .map { param ->
-                    val name = param.name ?: param.index.toString();
+                    val name = param.name ?: param.index.toString()
                     val isOptional = param.isOptional
-                    val isNullable = param.type.isMarkedNullable;
+                    val isNullable = param.type.isMarkedNullable
                     val isTentative = param.hasAnnotation<Tentative>()
 
                     if (isTentative && !(isNullable || isOptional))
@@ -55,7 +55,10 @@ abstract class Command
 
             CommandExecutable(func, this, arguments, contextParameter, properties)
         }
-        .sortedBy { executable -> executable.properties.order.toUInt() }
+        .sortedBy { executable -> executable.properties.order }
+
+    val usages: List<String> get() = methods.map { method -> method.arguments.joinToString(" ") { it.format(true) } }
+    val examples: List<String> get() = methods.map { method -> method.properties.examples.toList() }.flatten()
 
     var parent: Command? = null
         private set

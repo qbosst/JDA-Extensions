@@ -19,6 +19,9 @@ class Argument(val name: String,
         if(withType)
             append(": ").append(type.simpleName)
 
+        if(greedy)
+            append("...")
+
         if(optional || nullable) append(']') else append('>')
     }
 }

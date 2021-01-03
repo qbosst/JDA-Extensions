@@ -6,6 +6,7 @@ import me.qbosst.jda.ext.commands.hooks.CommandEventListener
 import me.qbosst.jda.ext.commands.parsers.*
 import net.dv8tion.jda.api.entities.*
 import java.net.URL
+import java.time.Duration
 
 class CommandClientBuilder
 {
@@ -64,6 +65,7 @@ class CommandClientBuilder
         ArgumentParser.parsers[String::class.java] = StringParser()
         ArgumentParser.parsers[ISnowflake::class.java] = SnowflakeParser()
         ArgumentParser.parsers[URL::class.java] = URLParser()
+        ArgumentParser.parsers[Duration::class.java] = DurationParser()
     }
 
     fun registerParser(clazz: Class<*>, parser: Parser<*>) = also { ArgumentParser.parsers[clazz] = parser }
