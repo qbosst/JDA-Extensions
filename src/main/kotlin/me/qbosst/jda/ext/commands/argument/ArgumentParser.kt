@@ -82,7 +82,7 @@ class ArgumentParser(private val ctx: CommandContext,
             .getOrElse { throw BadArgument(arg, argument, it) }
 
         // whether we can pass null or the default value
-        val canSubstitute = arg.isTentative || arg.nullable || (arg.optional && argument.isEmpty())
+        val canSubstitute = arg.isTentative || ((arg.optional || arg.nullable) && argument.isEmpty())
 
         if(!result.isPresent && !canSubstitute)
             throw BadArgument(arg, argument)

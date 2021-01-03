@@ -6,7 +6,6 @@ import me.qbosst.jda.ext.commands.annotations.Tentative
 import me.qbosst.jda.ext.commands.argument.Argument
 import net.dv8tion.jda.api.Permission
 import kotlin.reflect.KFunction
-import kotlin.reflect.KParameter
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.hasAnnotation
 import kotlin.reflect.full.valueParameters
@@ -55,7 +54,7 @@ abstract class Command
 
             CommandExecutable(func, this, arguments, contextParameter, properties)
         }
-        .sortedBy { executable -> executable.properties.order }
+        .sortedBy { executable -> executable.properties.priority }
 
     val usages: List<String> get() = methods.map { method -> method.arguments.joinToString(" ") { it.format(true) } }
     val examples: List<String> get() = methods.map { method -> method.properties.examples.toList() }.flatten()
