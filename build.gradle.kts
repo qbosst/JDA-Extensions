@@ -5,6 +5,14 @@ plugins {
     id("com.github.johnrengelman.shadow") version("6.0.0")
 }
 
+allprojects {
+    repositories {
+        mavenCentral()
+        jcenter()
+        maven("https://jitpack.io")
+    }
+}
+
 group = "me.boss"
 version = "1.0-SNAPSHOT"
 
