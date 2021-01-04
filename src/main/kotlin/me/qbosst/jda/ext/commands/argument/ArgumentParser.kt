@@ -73,19 +73,31 @@ class ArgumentParser(private val ctx: CommandContext,
 
     private fun getNextArrayArgument(greedy: Boolean): Pair<List<String>, List<String>>
     {
-        val (argument, original) = when
+        val (arguments, original) = when
         {
             args.isEmpty() -> Pair(emptyList(), emptyList())
 
-            greedy -> take(args.size).let { taken -> Pair(taken, taken) }
+            greedy ->
+            {
+                val arguments = mutableListOf<String>()
+                val original = arguments.toMutableList()
+                while (args.isNotEmpty())
+                {
+                    val (arg) = getNextArgument(false)
+                    if(arg.isEmpty() || arg.isBlank())
+                        break
+                    arguments.add(arg)
+                }
+
+                Pair(arguments as List<String>, original)
+            }
 
             args[0].startsWith('"') && delimiter == ' ' -> parseQuoted()
-                .let { (unquoted, original) -> Pair(unquoted.trim().removeSurrounding("\"").split(delimiter), original) }
+                .let { (argument, original) -> Pair(listOf(argument), original) }
 
             else -> take(1).let { taken -> Pair(taken, taken) }
         }
-
-        return Pair(argument, original)
+        return Pair(arguments, original)
     }
 
     suspend fun parse(arg: Argument): Any?
@@ -121,7 +133,6 @@ class ArgumentParser(private val ctx: CommandContext,
             ?: throw ParserNotRegistered(argType)
 
         val (arguments, original) = getNextArrayArgument(arg.isGreedy)
-        println(arguments)
 
         val (parsed, failedParses) = if(arguments.isEmpty()) Pair(emptyArray(), emptyList()) else kotlin.runCatching { parser.parse(ctx, arguments) }
             .getOrElse { throw BadArgument(arg, arguments.joinToString(delimiterStr), it) }
