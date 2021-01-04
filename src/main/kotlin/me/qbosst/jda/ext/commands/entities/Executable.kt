@@ -3,6 +3,7 @@ package me.qbosst.jda.ext.commands.entities
 import me.qbosst.jda.ext.commands.Command
 import me.qbosst.jda.ext.commands.CommandContext
 import me.qbosst.jda.ext.commands.argument.Argument
+import net.dv8tion.jda.api.entities.VoiceChannel
 import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
 import kotlin.reflect.full.callSuspendBy

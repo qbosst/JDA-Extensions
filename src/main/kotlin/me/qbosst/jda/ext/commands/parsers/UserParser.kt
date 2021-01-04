@@ -3,6 +3,7 @@ package me.qbosst.jda.ext.commands.parsers
 import me.qbosst.jda.ext.async.getOrRetrieveUserById
 import me.qbosst.jda.ext.commands.CommandContext
 import net.dv8tion.jda.api.entities.User
+import java.time.Duration
 import java.util.*
 
 class UserParser: Parser<User>
@@ -19,6 +20,25 @@ class UserParser: Parser<User>
 
             else -> Optional.ofNullable(ctx.jda.getUsersByName(param, false).firstOrNull())
         }
+    }
+
+    override suspend fun parse(ctx: CommandContext, params: List<String>): Pair<Array<User>, List<String>>
+    {
+        val successful = mutableListOf<User>()
+        val unSuccessful = mutableListOf<String>()
+        params.forEach { param ->
+            val optional = parse(ctx, param)
+            if(optional.isPresent)
+            {
+                successful.add(optional.get())
+            }
+            else
+            {
+                unSuccessful.add(param)
+            }
+        }
+
+        return Pair(successful.toTypedArray(), unSuccessful)
     }
 
     companion object

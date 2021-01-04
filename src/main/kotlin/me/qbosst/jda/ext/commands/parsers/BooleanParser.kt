@@ -13,6 +13,25 @@ class BooleanParser: Parser<Boolean>
         else -> Optional.empty()
     }
 
+    override suspend fun parse(ctx: CommandContext, params: List<String>): Pair<Array<Boolean>, List<String>>
+    {
+        val successful = mutableListOf<Boolean>()
+        val unSuccessful = mutableListOf<String>()
+        params.forEach { param ->
+            val optional = parse(ctx, param)
+            if(optional.isPresent)
+            {
+                successful.add(optional.get())
+            }
+            else
+            {
+                unSuccessful.add(param)
+            }
+        }
+
+        return Pair(successful.toTypedArray(), unSuccessful)
+    }
+
     companion object
     {
         val trueExpression = Pattern.compile("(y(es)?)|(t(rue)?)|(1)|(on)|(enable)")

@@ -71,18 +71,38 @@ class ArgumentParser(private val ctx: CommandContext,
         return Pair(unquoted, original)
     }
 
+    private fun getNextArrayArgument(greedy: Boolean): Pair<List<String>, List<String>>
+    {
+        val (argument, original) = when
+        {
+            args.isEmpty() -> Pair(emptyList(), emptyList())
+
+            greedy -> take(args.size).let { taken -> Pair(taken, taken) }
+
+            args[0].startsWith('"') && delimiter == ' ' -> parseQuoted()
+                .let { (unquoted, original) -> Pair(unquoted.trim().removeSurrounding("\"").split(delimiter), original) }
+
+            else -> take(1).let { taken -> Pair(taken, taken) }
+        }
+
+        return Pair(argument, original)
+    }
+
     suspend fun parse(arg: Argument): Any?
     {
+        if(arg.type.isArray)
+            return parseList(arg)
+
         val parser = parsers[arg.type]
             ?: throw ParserNotRegistered(arg.type)
 
-        val (argument, original) = getNextArgument(arg.greedy)
+        val (argument, original) = getNextArgument(arg.isGreedy)
 
         val result = if(argument.isEmpty()) Optional.empty() else kotlin.runCatching { parser.parse(ctx, argument) }
             .getOrElse { throw BadArgument(arg, argument, it) }
 
         // whether we can pass null or the default value
-        val canSubstitute = arg.isTentative || ((arg.optional || arg.nullable) && argument.isEmpty())
+        val canSubstitute = arg.isTentative || ((arg.isOptional || arg.isNullable) && argument.isEmpty())
 
         if(!result.isPresent && !canSubstitute)
             throw BadArgument(arg, argument)
@@ -91,6 +111,34 @@ class ArgumentParser(private val ctx: CommandContext,
             restore(original)
 
         return result.orElse(null)
+    }
+
+    private suspend fun parseList(arg: Argument): Any?
+    {
+        val argType = arg.type.componentType
+
+        val parser = parsers[argType]
+            ?: throw ParserNotRegistered(argType)
+
+        val (arguments, original) = getNextArrayArgument(arg.isGreedy)
+        println(arguments)
+
+        val (parsed, failedParses) = if(arguments.isEmpty()) Pair(emptyArray(), emptyList()) else kotlin.runCatching { parser.parse(ctx, arguments) }
+            .getOrElse { throw BadArgument(arg, arguments.joinToString(delimiterStr), it) }
+
+        if(failedParses.isNotEmpty() && !arg.isTentative)
+            throw BadArgument(arg, failedParses)
+
+        // whether we can pass null or the default value
+        val canSubstitute = arg.isTentative || ((arg.isOptional || arg.isNullable) && arguments.isEmpty())
+
+        if(parsed.isEmpty() && !canSubstitute)
+            throw BadArgument(arg, arguments)
+
+        if(parsed.isEmpty() && arg.isTentative)
+            restore(original)
+
+        return if(parsed.isEmpty()) null else parsed
     }
 
     companion object
@@ -111,8 +159,10 @@ class ArgumentParser(private val ctx: CommandContext,
             executable.arguments.forEach { arg ->
                 val result = parser.parse(arg)
 
-                if(result != null || (arg.nullable && !arg.optional) || (arg.isTentative && arg.nullable))
+                if(result != null || (arg.isNullable && !arg.isOptional) || (arg.isTentative && arg.isNullable))
+                {
                     resolved[arg.kParameter] = result
+                }
             }
 
             return resolved

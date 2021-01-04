@@ -14,4 +14,23 @@ class DurationParser: Parser<Duration>
             null -> Optional.ofNullable(null)
             else -> Optional.of(Duration.ofSeconds(seconds))
         }
+
+    override suspend fun parse(ctx: CommandContext, params: List<String>): Pair<Array<Duration>, List<String>>
+    {
+        val successful = mutableListOf<Duration>()
+        val unSuccessful = mutableListOf<String>()
+        params.forEach { param ->
+            val optional = parse(ctx, param)
+            if(optional.isPresent)
+            {
+                successful.add(optional.get())
+            }
+            else
+            {
+                unSuccessful.add(param)
+            }
+        }
+
+        return Pair(successful.toTypedArray(), unSuccessful)
+    }
 }

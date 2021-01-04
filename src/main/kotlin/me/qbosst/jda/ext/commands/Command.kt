@@ -1,15 +1,12 @@
 package me.qbosst.jda.ext.commands
 
 import me.qbosst.jda.ext.commands.annotations.CommandFunction
-import me.qbosst.jda.ext.commands.annotations.Greedy
-import me.qbosst.jda.ext.commands.annotations.Tentative
 import me.qbosst.jda.ext.commands.argument.Argument
 import net.dv8tion.jda.api.Permission
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.hasAnnotation
 import kotlin.reflect.full.valueParameters
-import kotlin.reflect.jvm.jvmErasure
 
 abstract class Command
 {
@@ -34,21 +31,7 @@ abstract class Command
 
             val arguments = func.valueParameters
                 .filterNot { param -> param.type.classifier?.equals(CommandContext::class) == true }
-                .map { param ->
-                    val name = param.name ?: param.index.toString()
-                    val isOptional = param.isOptional
-                    val isNullable = param.type.isMarkedNullable
-                    val isTentative = param.hasAnnotation<Tentative>()
-
-                    if (isTentative && !(isNullable || isOptional))
-                        throw IllegalStateException("$name is marked as tentative, but does not have a default value and is not marked nullable!")
-
-                    Argument(
-                        name = name, type = param.type.jvmErasure.javaObjectType, greedy = param.hasAnnotation<Greedy>(),
-                        optional = isOptional, nullable = isNullable, isTentative = isTentative, index = param.index,
-                        kParameter = param
-                    )
-                }
+                .map { parameter -> Argument(parameter) }
 
             val properties = func.findAnnotation<CommandFunction>()!!
 
@@ -56,7 +39,11 @@ abstract class Command
         }
         .sortedBy { executable -> executable.properties.priority }
 
-    val usages: List<String> get() = methods.map { method -> method.arguments.joinToString(" ") { it.format(true) } }
+    val usages: List<String>
+        get() = methods
+            .filter { method -> method.properties.includeUsage }
+            .map { method -> method.arguments.joinToString(" ") { it.format(true) } }
+
     val examples: List<String> get() = methods.map { method -> method.properties.examples.toList() }.flatten()
 
     var parent: Command? = null
