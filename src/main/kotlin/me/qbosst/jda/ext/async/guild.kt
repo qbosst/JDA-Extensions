@@ -3,7 +3,9 @@ package me.qbosst.jda.ext.async
 import dev.minn.jda.ktx.await
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.Member
+import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.entities.User
+import net.dv8tion.jda.api.requests.RestAction
 
 suspend fun Guild.getOrRetrieveMemberById(id: Long): Member? = getMemberById(id) ?: retrieveMemberById(id).await()
 
@@ -19,6 +21,5 @@ suspend fun Guild.retrieveMembersByNickname(name: String, ignoreCase: Boolean = 
 
 suspend fun Guild.retrieveMembersByName(name: String, ignoreCase: Boolean = true): List<Member> =
     findMembers { it.user.name.equals(name, ignoreCase) }.await()
-
 
 

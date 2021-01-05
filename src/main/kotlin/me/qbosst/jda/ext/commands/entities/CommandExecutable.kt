@@ -1,21 +1,21 @@
 package me.qbosst.jda.ext.commands.entities
 
-import me.qbosst.jda.ext.commands.Command
-import me.qbosst.jda.ext.commands.CommandContext
+import me.qbosst.jda.ext.commands.annotations.CommandFunction
 import me.qbosst.jda.ext.commands.argument.Argument
-import net.dv8tion.jda.api.entities.VoiceChannel
 import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
 import kotlin.reflect.full.callSuspendBy
 import kotlin.reflect.full.instanceParameter
 
-open class Executable(val method: KFunction<*>,
-                      val instance: Command,
-                      val arguments: List<Argument>,
-                      private val contextParameter: KParameter
+class CommandExecutable(
+    val method: KFunction<*>,
+    val instance: Command,
+    val arguments: List<Argument>,
+    val contextParameter: KParameter,
+    val properties: CommandFunction
 )
 {
-    open suspend fun execute(ctx: CommandContext, args: HashMap<KParameter, Any?>, complete: suspend (Boolean, Throwable?) -> Unit)
+    suspend fun execute(ctx: Context, args: HashMap<KParameter, Any?>, complete: suspend (Boolean, Throwable?) -> Unit)
     {
         method.instanceParameter?.let { args[it] = instance }
         args[contextParameter] = ctx

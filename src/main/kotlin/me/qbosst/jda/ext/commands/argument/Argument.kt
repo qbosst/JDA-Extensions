@@ -6,14 +6,15 @@ import kotlin.reflect.KParameter
 import kotlin.reflect.full.hasAnnotation
 import kotlin.reflect.jvm.jvmErasure
 
-class Argument(val name: String,
-               val type: Class<*>,
-               val isGreedy: Boolean,
-               val isOptional: Boolean,
-               val isNullable: Boolean,
-               val isTentative: Boolean,
-               val index: Int,
-               internal val kParameter: KParameter
+class Argument(
+    val name: String,
+    val type: Class<*>,
+    val isGreedy: Boolean,
+    val isOptional: Boolean,
+    val isNullable: Boolean,
+    val isTentative: Boolean,
+    val index: Int,
+    internal val kParameter: KParameter
 )
 {
     constructor(kParameter: KParameter): this(

@@ -1,14 +1,13 @@
 package me.qbosst.jda.ext.commands.parsers
 
-import me.qbosst.jda.ext.commands.CommandContext
+import me.qbosst.jda.ext.commands.entities.Context
 import net.dv8tion.jda.api.entities.ISnowflake
-import java.time.Duration
 import java.util.*
 import java.util.regex.Pattern
 
 class SnowflakeParser: Parser<ISnowflake>
 {
-    override suspend fun parse(ctx: CommandContext, param: String): Optional<ISnowflake>
+    override suspend fun parse(ctx: Context, param: String): Optional<ISnowflake>
     {
         val matcher = snowflakeMatcher.matcher(param)
         return when
@@ -20,24 +19,7 @@ class SnowflakeParser: Parser<ISnowflake>
         }
     }
 
-    override suspend fun parse(ctx: CommandContext, params: List<String>): Pair<Array<ISnowflake>, List<String>>
-    {
-        val successful = mutableListOf<ISnowflake>()
-        val unSuccessful = mutableListOf<String>()
-        params.forEach { param ->
-            val optional = parse(ctx, param)
-            if(optional.isPresent)
-            {
-                successful.add(optional.get())
-            }
-            else
-            {
-                unSuccessful.add(param)
-            }
-        }
-
-        return Pair(successful.toTypedArray(), unSuccessful)
-    }
+    override suspend fun parse(ctx: Context, params: List<String>) = Parser.defaultParse(this, ctx, params)
 
     companion object
     {

@@ -1,36 +1,39 @@
-package me.qbosst.jda.ext.commands
+package me.qbosst.jda.ext.commands.impl
 
 import me.qbosst.jda.ext.commands.argument.ArgumentParser
+import me.qbosst.jda.ext.commands.entities.CommandEventListener
 import me.qbosst.jda.ext.commands.entities.PrefixProvider
-import me.qbosst.jda.ext.commands.hooks.CommandEventListener
 import me.qbosst.jda.ext.commands.parsers.*
 import net.dv8tion.jda.api.entities.*
 import java.net.URL
 import java.time.Duration
 
-class CommandClientBuilder
+class DefaultCommandClientBuilder
 {
-    private var ignoreBots: Boolean = true
-    private val listeners: MutableCollection<CommandEventListener> = mutableListOf()
-    private val developerIds: MutableCollection<Long> = mutableListOf()
+    private var prefixes: List<String> = emptyList()
+    private var allowMentionPrefix: Boolean = true
+    private var prefixProvider: PrefixProvider? = null
+    private val listeners: MutableList<CommandEventListener> = mutableListOf()
+    private val developerIds: MutableSet<Long> = mutableSetOf()
 
-    private var prefixProvider: PrefixProvider = object: PrefixProvider
-    {
-        override fun provide(message: Message): Collection<String> = listOf()
+    fun setPrefixes(vararg prefixes: String) = also { this.prefixes = prefixes.toList() }
+
+    fun setPrefixProvider(prefixProvider: PrefixProvider) = also { this.prefixProvider = prefixProvider }
+
+    fun setDeveloperIds(vararg developerIds: Long) = also {
+        this.developerIds.clear()
+        this.developerIds.addAll(developerIds.toList())
     }
 
-    fun setIgnoreBots(ignoreBots: Boolean) = apply { this.ignoreBots = ignoreBots }
+    fun setAllowMentionPrefix(allowMentionPrefix: Boolean) = also { this.allowMentionPrefix = allowMentionPrefix }
 
-    fun setDeveloperIds(vararg ids: Long) = apply {
-        developerIds.clear()
-        developerIds.addAll(ids.toTypedArray())
-    }
+    fun addEventListeners(vararg listeners: CommandEventListener) = also { this.listeners.addAll(listeners) }
 
-    fun addDeveloperIds(vararg ids: Long) = apply { developerIds.addAll(ids.toTypedArray()) }
+    fun addDeveloperIds(vararg developerIds: Long) = also { this.developerIds.addAll(developerIds.toList()) }
 
-    fun addEventListeners(vararg listeners: CommandEventListener) = apply { this.listeners.addAll(listeners) }
+    fun registerParser(clazz: Class<*>, parser: Parser<*>) = also { ArgumentParser.parsers[clazz] = parser }
 
-    fun setPrefixProvider(prefixProvider: PrefixProvider) = apply { this.prefixProvider = prefixProvider }
+    inline fun <reified T> registerParser(parser: Parser<T>) = also { registerParser(T::class.java, parser) }
 
     fun registerDefaultParsers() = also {
         // Kotlin types and primitives
@@ -68,16 +71,10 @@ class CommandClientBuilder
         ArgumentParser.parsers[Duration::class.java] = DurationParser()
     }
 
-    fun registerParser(clazz: Class<*>, parser: Parser<*>) = also { ArgumentParser.parsers[clazz] = parser }
-
-    fun build(): CommandClient {
-
-        return CommandClient(
-            prefixProvider = prefixProvider,
-            ignoreBots = ignoreBots,
-            listeners = listeners.toList(),
-            developerIds = developerIds
-        )
+    fun build(): DefaultCommandClient
+    {
+        val prefixProvider = this.prefixProvider ?: DefaultPrefixProvider(prefixes, allowMentionPrefix)
+        val client = DefaultCommandClient(prefixProvider, listeners, developerIds)
+        return client
     }
-
 }

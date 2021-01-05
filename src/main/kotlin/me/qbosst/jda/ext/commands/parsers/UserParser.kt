@@ -1,14 +1,13 @@
 package me.qbosst.jda.ext.commands.parsers
 
 import me.qbosst.jda.ext.async.getOrRetrieveUserById
-import me.qbosst.jda.ext.commands.CommandContext
+import me.qbosst.jda.ext.commands.entities.Context
 import net.dv8tion.jda.api.entities.User
-import java.time.Duration
 import java.util.*
 
 class UserParser: Parser<User>
 {
-    override suspend fun parse(ctx: CommandContext, param: String): Optional<User>
+    override suspend fun parse(ctx: Context, param: String): Optional<User>
     {
         val snowflake = snowflakeParser.parse(ctx, param)
 
@@ -22,24 +21,7 @@ class UserParser: Parser<User>
         }
     }
 
-    override suspend fun parse(ctx: CommandContext, params: List<String>): Pair<Array<User>, List<String>>
-    {
-        val successful = mutableListOf<User>()
-        val unSuccessful = mutableListOf<String>()
-        params.forEach { param ->
-            val optional = parse(ctx, param)
-            if(optional.isPresent)
-            {
-                successful.add(optional.get())
-            }
-            else
-            {
-                unSuccessful.add(param)
-            }
-        }
-
-        return Pair(successful.toTypedArray(), unSuccessful)
-    }
+    override suspend fun parse(ctx: Context, params: List<String>) = Parser.defaultParse(this, ctx, params)
 
     companion object
     {

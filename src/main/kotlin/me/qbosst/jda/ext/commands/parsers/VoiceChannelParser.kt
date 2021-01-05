@@ -1,13 +1,12 @@
 package me.qbosst.jda.ext.commands.parsers
 
-import me.qbosst.jda.ext.commands.CommandContext
+import me.qbosst.jda.ext.commands.entities.Context
 import net.dv8tion.jda.api.entities.VoiceChannel
-import java.time.Duration
 import java.util.*
 
 class VoiceChannelParser: Parser<VoiceChannel>
 {
-    override suspend fun parse(ctx: CommandContext, param: String): Optional<VoiceChannel>
+    override suspend fun parse(ctx: Context, param: String): Optional<VoiceChannel>
     {
         val snowflake = snowflakeParser.parse(ctx, param)
 
@@ -19,24 +18,7 @@ class VoiceChannelParser: Parser<VoiceChannel>
         }
     }
 
-    override suspend fun parse(ctx: CommandContext, params: List<String>): Pair<Array<VoiceChannel>, List<String>>
-    {
-        val successful = mutableListOf<VoiceChannel>()
-        val unSuccessful = mutableListOf<String>()
-        params.forEach { param ->
-            val optional = parse(ctx, param)
-            if(optional.isPresent)
-            {
-                successful.add(optional.get())
-            }
-            else
-            {
-                unSuccessful.add(param)
-            }
-        }
-
-        return Pair(successful.toTypedArray(), unSuccessful)
-    }
+    override suspend fun parse(ctx: Context, params: List<String>) = Parser.defaultParse(this, ctx, params)
 
     companion object
     {
