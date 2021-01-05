@@ -36,7 +36,7 @@ class DefaultCommandClient(
     {
         // do not allow bots to use commands
         if(event.author.isBot || event.isWebhookMessage)
-            return dispatch { onMessageReceivedEvent(event) }
+            return dispatch { onNonCommandEvent(event) }
 
         val message = event.message
         val prefixes = prefixProvider.provide(message)
@@ -44,7 +44,7 @@ class DefaultCommandClient(
 
         // gets the prefix used and makes sure that message is more than just the prefix
         val prefix = prefixes.firstOrNull { prefix -> content.startsWith(prefix) && content.length > prefix.length }
-            ?: return dispatch { onMessageReceivedEvent(event) }
+            ?: return dispatch { onNonCommandEvent(event) }
 
         val args = content.substring(prefix.length).split("\\s+".toRegex()).toMutableList()
         val label = args.removeAt(0).toLowerCase()

@@ -40,13 +40,13 @@ class HandledCoroutineEventManager(private val scope: CoroutineScope = GlobalSco
     override fun getRegisteredListeners(): MutableList<Any> = mutableListOf(listeners)
 
     override fun register(listener: Any) {
-        listeners.remove(listener)
-    }
-
-    override fun unregister(listener: Any) {
         listeners.add(when(listener) {
             is EventListener, is CoroutineEventListener -> listener
             else -> throw IllegalArgumentException("Listener must implement either EventListener or CoroutineEventListener")
         })
+    }
+
+    override fun unregister(listener: Any) {
+        listeners.remove(listener)
     }
 }

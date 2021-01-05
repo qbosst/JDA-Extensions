@@ -16,7 +16,7 @@ fun String.withSingleLineCode(): String = "`$this`"
 
 fun String.withMultilineCode(): String = "```$this```"
 
-fun String.withMultilineCode(language: String): String = "```$language $this```"
+fun String.withMultilineCode(language: String): String = "```$language\n$this```"
 
 fun String.maxLength(length: Int = Message.MAX_CONTENT_LENGTH, ending: String = "..."): String =
     if(this.length > length) substring(0, length-ending.length)+ending else this
