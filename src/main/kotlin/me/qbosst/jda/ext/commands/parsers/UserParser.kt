@@ -1,13 +1,13 @@
 package me.qbosst.jda.ext.commands.parsers
 
 import dev.minn.jda.ktx.await
-import me.qbosst.jda.ext.commands.entities.Context
+import me.qbosst.jda.ext.commands.entities.IContext
 import net.dv8tion.jda.api.entities.User
 import java.util.*
 
 class UserParser: Parser<User>
 {
-    override suspend fun parse(ctx: Context, param: String): Optional<User>
+    override suspend fun parse(ctx: IContext, param: String): Optional<User>
     {
         val snowflake = snowflakeParser.parse(ctx, param)
         
@@ -23,7 +23,7 @@ class UserParser: Parser<User>
         }
     }
 
-    override suspend fun parse(ctx: Context, params: List<String>) = Parser.defaultParse(this, ctx, params)
+    override suspend fun parse(ctx: IContext, params: List<String>) = Parser.defaultParse(this, ctx, params)
 
     companion object
     {

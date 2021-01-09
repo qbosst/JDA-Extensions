@@ -1,19 +1,19 @@
 package me.qbosst.jda.ext.commands.parsers
 
-import me.qbosst.jda.ext.commands.entities.Context
+import me.qbosst.jda.ext.commands.entities.IContext
 import java.util.*
 import java.util.regex.Pattern
 
 class BooleanParser: Parser<Boolean>
 {
-    override suspend fun parse(ctx: Context, param: String): Optional<Boolean> = when
+    override suspend fun parse(ctx: IContext, param: String): Optional<Boolean> = when
     {
         trueExpression.matcher(param).matches() -> Optional.of(true)
         falseExpression.matcher(param).matches() -> Optional.of(false)
         else -> Optional.empty()
     }
 
-    override suspend fun parse(ctx: Context, params: List<String>) = Parser.defaultParse(this, ctx, params)
+    override suspend fun parse(ctx: IContext, params: List<String>) = Parser.defaultParse(this, ctx, params)
 
     companion object
     {

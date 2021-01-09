@@ -5,9 +5,8 @@ import me.qbosst.jda.ext.commands.argument.Argument
 import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.entities.ISnowflake
 import kotlin.reflect.KFunction
-import kotlin.reflect.full.findAnnotation
-import kotlin.reflect.full.hasAnnotation
-import kotlin.reflect.full.valueParameters
+import kotlin.reflect.full.*
+import kotlin.reflect.jvm.jvmErasure
 
 abstract class Command
 {
@@ -52,11 +51,11 @@ abstract class Command
         .map { func ->
             // make sure method has a Context parameter
             val contextParameter = func.valueParameters
-                .firstOrNull { param -> param.type.classifier?.equals(Context::class) == true }
+                .firstOrNull { param -> IContext::class.java.isAssignableFrom(param.type.jvmErasure.javaObjectType) }
             require(contextParameter != null) { "${func.name} is missing the Context parameter!" }
 
             val arguments = func.valueParameters.asSequence()
-                .filterNot { param -> param.type.classifier?.equals(Context::class) == true }
+                .filterNot { param -> IContext::class.java.isAssignableFrom(param.type.jvmErasure.javaObjectType) }
                 .map { parameter -> Argument(parameter) }
                 .toList()
 

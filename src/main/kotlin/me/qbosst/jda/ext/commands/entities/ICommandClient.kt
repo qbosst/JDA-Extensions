@@ -1,6 +1,6 @@
 package me.qbosst.jda.ext.commands.entities
 
-interface CommandClient
+interface ICommandClient
 {
     val commands: Map<String, Command>
     val listeners: Collection<CommandEventListener>

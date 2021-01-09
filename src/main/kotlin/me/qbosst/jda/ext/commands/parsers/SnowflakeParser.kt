@@ -1,13 +1,13 @@
 package me.qbosst.jda.ext.commands.parsers
 
-import me.qbosst.jda.ext.commands.entities.Context
+import me.qbosst.jda.ext.commands.entities.IContext
 import net.dv8tion.jda.api.entities.ISnowflake
 import java.util.*
 import java.util.regex.Pattern
 
 class SnowflakeParser: Parser<ISnowflake>
 {
-    override suspend fun parse(ctx: Context, param: String): Optional<ISnowflake>
+    override suspend fun parse(ctx: IContext, param: String): Optional<ISnowflake>
     {
         val matcher = snowflakeMatcher.matcher(param)
         return when
@@ -19,7 +19,7 @@ class SnowflakeParser: Parser<ISnowflake>
         }
     }
 
-    override suspend fun parse(ctx: Context, params: List<String>) = Parser.defaultParse(this, ctx, params)
+    override suspend fun parse(ctx: IContext, params: List<String>) = Parser.defaultParse(this, ctx, params)
 
     companion object
     {

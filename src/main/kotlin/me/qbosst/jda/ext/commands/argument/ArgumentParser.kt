@@ -1,7 +1,7 @@
 package me.qbosst.jda.ext.commands.argument
 
 import me.qbosst.jda.ext.commands.entities.CommandExecutable
-import me.qbosst.jda.ext.commands.entities.Context
+import me.qbosst.jda.ext.commands.entities.IContext
 import me.qbosst.jda.ext.commands.exceptions.BadArgument
 import me.qbosst.jda.ext.commands.exceptions.ParserNotRegistered
 import me.qbosst.jda.ext.commands.parsers.Parser
@@ -9,7 +9,7 @@ import java.util.*
 import kotlin.collections.HashMap
 import kotlin.reflect.KParameter
 
-class ArgumentParser(private val ctx: Context,
+class ArgumentParser(private val ctx: IContext,
                      private val delimiter: Char,
                      args: List<String>
 )
@@ -156,7 +156,7 @@ class ArgumentParser(private val ctx: Context,
     {
         val parsers = hashMapOf<Class<*>, Parser<*>>()
 
-        suspend fun parseArguments(executable: CommandExecutable, ctx: Context, _args: List<String>,
+        suspend fun parseArguments(executable: CommandExecutable, ctx: IContext, _args: List<String>,
                                    delimiter: Char): HashMap<KParameter, Any?>
         {
             if(executable.arguments.isEmpty())

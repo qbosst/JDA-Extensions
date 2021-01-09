@@ -14,7 +14,7 @@ class DefaultCommandClient(
     override val prefixProvider: PrefixProvider,
     override val listeners: Collection<CommandEventListener>,
     developerIds: Collection<Long>
-): CommandClient, CoroutineEventListener
+): ICommandClient, CoroutineEventListener
 {
     private val _commands: MutableMap<String, Command> = mutableMapOf()
     private val commandsAlias: MutableMap<String, Command> = mutableMapOf()

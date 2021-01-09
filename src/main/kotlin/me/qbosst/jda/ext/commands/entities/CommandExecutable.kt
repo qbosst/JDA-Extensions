@@ -15,7 +15,7 @@ class CommandExecutable(
     val properties: CommandFunction
 )
 {
-    suspend fun execute(ctx: Context, args: HashMap<KParameter, Any?>, complete: suspend (Boolean, Throwable?) -> Unit)
+    suspend fun execute(ctx: IContext, args: HashMap<KParameter, Any?>, complete: suspend (Boolean, Throwable?) -> Unit)
     {
         method.instanceParameter?.let { args[it] = instance }
         args[contextParameter] = ctx

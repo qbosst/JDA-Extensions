@@ -1,12 +1,12 @@
 package me.qbosst.jda.ext.commands.parsers
 
-import me.qbosst.jda.ext.commands.entities.Context
+import me.qbosst.jda.ext.commands.entities.IContext
 import net.dv8tion.jda.api.entities.TextChannel
 import java.util.*
 
 class TextChannelParser: Parser<TextChannel>
 {
-    override suspend fun parse(ctx: Context, param: String): Optional<TextChannel>
+    override suspend fun parse(ctx: IContext, param: String): Optional<TextChannel>
     {
         val snowflake = snowflakeParser.parse(ctx, param)
 
@@ -18,7 +18,7 @@ class TextChannelParser: Parser<TextChannel>
         }
     }
 
-    override suspend fun parse(ctx: Context, params: List<String>) = Parser.defaultParse(this, ctx, params)
+    override suspend fun parse(ctx: IContext, params: List<String>) = Parser.defaultParse(this, ctx, params)
 
     companion object
     {
