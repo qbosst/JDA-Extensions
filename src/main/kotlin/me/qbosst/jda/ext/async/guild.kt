@@ -5,12 +5,6 @@ import net.dv8tion.jda.api.entities.*
 import net.dv8tion.jda.api.events.message.GenericMessageEvent
 import net.dv8tion.jda.api.requests.RestAction
 
-suspend fun Guild.getOrRetrieveMemberById(id: Long): Member? = getMemberById(id) ?: retrieveMemberById(id).await()
-
-suspend fun Guild.getOrRetrieveMemberById(id: String): Member? = getMemberById(id) ?: retrieveMemberById(id).await()
-
-suspend fun Guild.getOrRetrieveMember(user: User): Member? = getMember(user) ?: retrieveMember(user).await()
-
 suspend fun Guild.retrieveMembersByEffectiveName(name: String, ignoreCase: Boolean = true): List<Member> =
     findMembers { it.effectiveName.equals(name, ignoreCase) }.await()
 

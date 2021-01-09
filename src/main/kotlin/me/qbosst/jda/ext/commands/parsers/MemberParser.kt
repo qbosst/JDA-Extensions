@@ -1,6 +1,6 @@
 package me.qbosst.jda.ext.commands.parsers
 
-import me.qbosst.jda.ext.async.getOrRetrieveMemberById
+import dev.minn.jda.ktx.await
 import me.qbosst.jda.ext.commands.entities.Context
 import net.dv8tion.jda.api.entities.Member
 import net.dv8tion.jda.api.entities.User
@@ -14,7 +14,7 @@ class MemberParser: Parser<Member>
 
         return when
         {
-            snowflake.isPresent -> Optional.ofNullable(ctx.guild?.getOrRetrieveMemberById(snowflake.get().idLong))
+            snowflake.isPresent -> Optional.ofNullable(ctx.guild?.retrieveMemberById(snowflake.get().idLong)?.await())
 
             User.USER_TAG.matcher(param).matches() -> Optional.ofNullable(ctx.guild?.getMemberByTag(param))
 

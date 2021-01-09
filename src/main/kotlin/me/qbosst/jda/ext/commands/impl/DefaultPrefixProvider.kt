@@ -15,7 +15,7 @@ class DefaultPrefixProvider(private val prefixes: List<String>, private val allo
             prefixes.add("<@!${selfUserId}>")
         }
 
-        prefixes.addAll(prefixes)
+        prefixes.addAll(this.prefixes)
 
         return prefixes
     }

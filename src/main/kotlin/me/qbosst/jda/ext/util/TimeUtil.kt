@@ -70,9 +70,14 @@ object TimeUtil
 
     val dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy")
 
-    fun filterZones(query: String) = query.toLowerCase()
-        .let { q -> zoneMatcher.filter { zone -> q.matches(zone.value) } }
-        .map { entry -> entry.key }
+    fun filterZones(query: String): List<ZoneId> {
+        val lower = query.toLowerCase()
+
+        return zoneMatcher.asSequence()
+            .filter { (_, regex) -> lower.matches(regex) }
+            .map { (key, _) -> key }
+            .toList()
+    }
 
     /**
      *  Gets the zone id of the [query] provided case insensitive.
