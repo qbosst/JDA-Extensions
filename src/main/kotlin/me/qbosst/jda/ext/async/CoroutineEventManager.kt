@@ -1,6 +1,5 @@
 package me.qbosst.jda.ext.async
 
-import dev.minn.jda.ktx.CoroutineEventListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -11,12 +10,9 @@ import net.dv8tion.jda.internal.JDAImpl
 import java.util.concurrent.CopyOnWriteArrayList
 
 /**
- * Copy of [dev.minn.jda.ktx.CoroutineEventManager] but it surrounds every listener with a try block so if
- * any exceptions are thrown the other event listeners can still execute
- *
  * This supports both [EventListener] and [CoroutineEventListener]
  */
-class HandledCoroutineEventManager(private val scope: CoroutineScope = GlobalScope): IEventManager {
+class CoroutineEventManager(private val scope: CoroutineScope = GlobalScope): IEventManager {
     private val listeners = CopyOnWriteArrayList<Any>()
 
     override fun handle(event: GenericEvent) {

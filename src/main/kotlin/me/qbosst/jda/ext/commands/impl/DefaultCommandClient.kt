@@ -1,6 +1,6 @@
 package me.qbosst.jda.ext.commands.impl
 
-import dev.minn.jda.ktx.CoroutineEventListener
+import me.qbosst.jda.ext.async.CoroutineEventListener
 import me.qbosst.jda.ext.commands.annotations.CommandFunction
 import me.qbosst.jda.ext.commands.argument.ArgumentParser
 import me.qbosst.jda.ext.commands.entities.*

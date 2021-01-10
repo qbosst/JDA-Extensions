@@ -1,9 +1,7 @@
 package me.qbosst.jda.ext.async
 
-import dev.minn.jda.ktx.await
 import net.dv8tion.jda.api.entities.*
 import net.dv8tion.jda.api.events.message.GenericMessageEvent
-import net.dv8tion.jda.api.requests.RestAction
 
 suspend fun Guild.retrieveMembersByEffectiveName(name: String, ignoreCase: Boolean = true): List<Member> =
     findMembers { it.effectiveName.equals(name, ignoreCase) }.await()

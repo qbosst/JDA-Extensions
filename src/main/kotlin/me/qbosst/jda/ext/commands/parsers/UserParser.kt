@@ -1,6 +1,6 @@
 package me.qbosst.jda.ext.commands.parsers
 
-import dev.minn.jda.ktx.await
+import me.qbosst.jda.ext.async.await
 import me.qbosst.jda.ext.commands.entities.IContext
 import net.dv8tion.jda.api.entities.User
 import java.util.*

@@ -25,7 +25,6 @@ repositories {
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.4.21")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
-    implementation("dev.minn:jda-ktx:0.3.1")
 
     compileOnly("net.dv8tion:JDA:4.2.0_225")
 
