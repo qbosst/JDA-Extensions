@@ -111,7 +111,7 @@ class ArgumentParser(private val ctx: IContext,
         val (argument, original) = getNextArgument(arg.isGreedy)
 
         val result = if(argument.isEmpty()) Optional.empty() else kotlin.runCatching { parser.parse(ctx, argument) }
-            .getOrElse { throw BadArgument(arg, argument, it) }
+            .getOrElse { throw BadArgument(arg, argument, cause = it) }
 
         // whether we can pass null or the default value
         val canSubstitute = arg.isTentative || ((arg.isOptional || arg.isNullable) && argument.isEmpty())
@@ -135,7 +135,7 @@ class ArgumentParser(private val ctx: IContext,
         val (arguments, original) = getNextArrayArgument(arg.isGreedy)
 
         val (parsed, failedParses) = if(arguments.isEmpty()) Pair(emptyArray(), emptyList()) else kotlin.runCatching { parser.parse(ctx, arguments) }
-            .getOrElse { throw BadArgument(arg, arguments.joinToString(delimiterStr), it) }
+            .getOrElse { throw BadArgument(arg, arguments.joinToString(delimiterStr), cause = it) }
 
         if(failedParses.isNotEmpty() && !arg.isTentative)
             throw BadArgument(arg, failedParses)
